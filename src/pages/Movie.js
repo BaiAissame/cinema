@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Pagination from "../components/Pagination";
 
 const Movie = () => {
   const [movieArray, setMovieArray] = useState([]);
   const [imageUrl, setImageUrl] = useState('');
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
-  const [pages, setPages] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
   const [filtersSelected, setFiltersSelected] = useState(4);
   const inputRef = useRef(null);
-
   const filters = ['popular', 'now_playing', 'upcoming', 'top_rated'];
 
   const options = {
@@ -20,9 +20,7 @@ const Movie = () => {
     }
   };
 
-  useEffect(() => {
-    loadApiDataWithFilters();
-  }, [filtersSelected, page]);
+
 
   const handleFilters = (e) => {
     setPage(1);
@@ -42,17 +40,30 @@ const Movie = () => {
       default:
         break;
     }
+    console.log(filtersSelected);
+    loadApiDataWithFilters();
   };
+
+  function sliceFive(arr) {
+    let groups = [];
+    for (let i = 0; i < arr.length; i += 5) {
+      groups.push(arr.slice(i, i + 5));
+    }
+    return groups;
+  }  
+
 
   const loadApiDataWithFilters = () => {
     fetch(`https://api.themoviedb.org/3/movie/${filters[filtersSelected]}?language=fr-FR&page=${page}`, options)
       .then((response) => response.json())
       .then((response) => {
-        setMovieArray(response.results.slice(0, 5));
-        const nbPage = response.total_pages > 50 ? 50 : response.total_pages;
-        setPages(Array.from({ length: nbPage }, (_, i) => i + 1));
+            const nbPage = response.total_pages > 50 ? 50 : response.total_pages;
+            setTotalPages(nbPage);
+            const slicedArray = sliceFive(response.results);
+            setMovieArray(slicedArray);         
       })
       .catch((err) => console.error(err));
+  
 
     fetch('https://api.themoviedb.org/3/configuration', options)
       .then((response) => response.json())
@@ -79,7 +90,8 @@ const Movie = () => {
       .then((response) => response.json())
       .then((response) => {
         setMovieArray(response.results.slice(0, 5));
-        setPages(Array.from({ length: response.total_pages }, (_, i) => i + 1));
+        const nbPage = response.total_pages > 50 ? 50 : response.total_pages;
+        setTotalPages(nbPage);
       })
       .catch((err) => console.error(err));
   };
@@ -128,19 +140,7 @@ const Movie = () => {
         </div>
       )}
 
-      {pages.length > 1 && (
-        <nav className="ms-3">
-          <ul className="pagination d-flex flex-row flex-nowrap overflow-auto">
-            {pages.map((pageNum) => (
-              <li key={pageNum} className="page-item" onClick={() => newPage(pageNum)}>
-                <a className="page-link" href="#">
-                  {pageNum}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+      <Pagination totalPages={totalPages} newPage={newPage}/>
     </div>
   );
 };
