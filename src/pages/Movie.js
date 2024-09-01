@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useRef } from 'react';
+import useEffectAfterMount from "../hooks/useEffectAfterMount";
+
 import Pagination from "../components/Pagination";
+
+import ListCard from "../components/ListCard"
 
 const Movie = () => {
   const [movieArray, setMovieArray] = useState([]);
@@ -20,6 +23,9 @@ const Movie = () => {
     }
   };
 
+  useEffectAfterMount(() => {
+    loadApiDataWithFilters();
+  }, [filtersSelected]);
 
 
   const handleFilters = (e) => {
@@ -40,8 +46,6 @@ const Movie = () => {
       default:
         break;
     }
-    console.log(filtersSelected);
-    loadApiDataWithFilters();
   };
 
   function sliceFive(arr) {
@@ -53,16 +57,17 @@ const Movie = () => {
   }  
 
 
-  const loadApiDataWithFilters = () => {
-    fetch(`https://api.themoviedb.org/3/movie/${filters[filtersSelected]}?language=fr-FR&page=${page}`, options)
-      .then((response) => response.json())
-      .then((response) => {
-            const nbPage = response.total_pages > 50 ? 50 : response.total_pages;
-            setTotalPages(nbPage);
-            const slicedArray = sliceFive(response.results);
-            setMovieArray(slicedArray);         
-      })
-      .catch((err) => console.error(err));
+  const loadApiDataWithFilters = async() => {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/movie/${filters[filtersSelected]}?language=fr-FR&page=${page}`, options)
+        const data = await response.json()
+        const nbPage = data.total_pages > 50 ? 50 : data.total_pages;
+        setTotalPages(nbPage);
+        const slicedArray = sliceFive(data.results);
+        setMovieArray(slicedArray);     
+    } catch(err) {
+        console.error(err);
+    };
   
 
     fetch('https://api.themoviedb.org/3/configuration', options)
@@ -131,12 +136,12 @@ const Movie = () => {
       </div>
 
       {movieArray.length > 0 && (
-        <div className="movie-list">
-          <ul>
-            {movieArray.map((movie, index) => (
-              <li key={index}>{movie.title}</li>
+        <div className="movie-list container">
+          <div className="row">
+            {movieArray.map((movieList, index) => (
+              <ListCard key={index} movieList={movieList} media={"movie"} />
             ))}
-          </ul>
+          </div>
         </div>
       )}
 
