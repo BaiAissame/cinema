@@ -130,3 +130,15 @@ body {
   display: flex;
   align-items: center;
 }
+
+.banner {
+  width: 100%;
+  height: 25vw;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+.poster{
+  height:100%;
+}
