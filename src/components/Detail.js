@@ -1,6 +1,7 @@
 import React, {useState,useEffect} from "react";
 import Banner from "./ui/Banner";
 import { useParams } from 'react-router-dom';
+import Credit from "./Credit";
 
 function Detail() {
   const { media,id } = useParams();
@@ -18,7 +19,7 @@ function Detail() {
   };
   useEffect(() => {
     loadDetail();
-  }, [])
+  }, []);
   
   const loadDetail = async () => {
 
@@ -29,7 +30,6 @@ function Detail() {
       );
       const data = await response.json();
       setMediaDetail(data);
-      console.log(data);
     } catch (err) {
       console.error(err);
     }
@@ -53,6 +53,7 @@ function Detail() {
   return (
     <div>
       <Banner title={mediaDetail.title} poster_url={posterUrl+mediaDetail.poster_path} image_url={imageUrl+ mediaDetail.poster_path} synopsis={mediaDetail.overview} release_date={mediaDetail.release_date}/>
+      <Credit id={id}/>
     </div>
   );
 

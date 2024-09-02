@@ -142,3 +142,21 @@ body {
 .poster{
   height:100%;
 }
+
+
+ul.scrollcast {
+  background-color: #d1d1e0;
+  overflow: auto;
+  white-space: nowrap;
+  height: 25vw;
+}
+
+
+ul.scrollcast li {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+}
+
