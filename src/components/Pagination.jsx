@@ -9,7 +9,7 @@ export default function Pagination({ totalPages, newPage }) {
                     <ul className="pagination d-flex flex-row flex-nowrap overflow-auto">
                         {pages.map((pageNum) => (
                             <li key={pageNum} className="page-item" onClick={() => newPage(pageNum)}>
-                                <a className="page-link" href="#">
+                                <a className="page-link">
                                     {pageNum}
                                 </a>
                             </li>
