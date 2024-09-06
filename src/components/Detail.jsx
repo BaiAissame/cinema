@@ -1,62 +1,43 @@
-import React, {useState,useEffect} from "react";
-import Banner from "./ui/Banner";
+import React from "react";
 import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import Banner from "./ui/Banner";
 import Credit from "./Credit";
+import { fetchMediaDetail, fetchConfiguration } from '../api/detailApi';
 
 function Detail() {
-  const { media,id } = useParams();
-  const [mediaDetail, setMediaDetail] = useState({});
-  const [imageUrl, setImageUrl] = useState('');
-  const [posterUrl, setPosterUrl] = useState('')
+  const { media, id } = useParams();
 
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzODM5YWZkYjZlMjI5N2Y4MDMwYTViNWVlNTJkMjBiYSIsInN1YiI6IjY2NmY0MmIyMDYyNTRhY2JjOWVjMDE2MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xoxStgNC8pIKEItzhDhfCX0y443PbLYpEPQllneU34I",
-    },
-  };
-  useEffect(() => {
-    loadDetail();
-  }, []);
-  
-  const loadDetail = async () => {
+  const { data: mediaDetail, isLoading: isLoadingDetail, error: errorDetail } = useQuery({
+    queryKey: ['mediaDetail', media, id],
+    queryFn: () => fetchMediaDetail({ queryKey: ['mediaDetail', media, id] })
+  });
 
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/${media}/${id}?language=fr-FR&append_to_response=videos`,
-        options
-      );
-      const data = await response.json();
-      setMediaDetail(data);
-    } catch (err) {
-      console.error(err);
-    }
+  const { data: config, isLoading: isLoadingConfig, error: errorConfig } = useQuery({
+    queryKey: 'configuration',
+    queryFn: fetchConfiguration,
+    select: (data) => ({
+      posterUrl: data.images.base_url + data.images.backdrop_sizes[3],
+      imageUrl: data.images.base_url + data.images.backdrop_sizes[0],
+    })
+  });
 
-    try {
-      const response = await fetch(
-        "https://api.themoviedb.org/3/configuration",
-        options
-      );
-      const data = await response.json();
-      const base_url = data.images.base_url;
-      const file_size_poster = data.images.backdrop_sizes[3];
-      const file_size_image = data.images.backdrop_sizes[0];
-      setPosterUrl(base_url + file_size_poster);
-      setImageUrl(base_url + file_size_image);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  if (isLoadingDetail || isLoadingConfig) return <div>Chargement...</div>;
+  if (errorDetail) return <div>Erreur lors du chargement des détails : {errorDetail.message}</div>;
+  if (errorConfig) return <div>Erreur lors du chargement de la configuration : {errorConfig.message}</div>;
 
   return (
     <div>
-      <Banner title={mediaDetail.title} poster_url={posterUrl+mediaDetail.poster_path} image_url={imageUrl+ mediaDetail.poster_path} synopsis={mediaDetail.overview} release_date={mediaDetail.release_date}/>
-      <Credit id={id}/>
+      <Banner 
+        title={mediaDetail.title} 
+        poster_url={config.posterUrl + mediaDetail.poster_path} 
+        image_url={config.imageUrl + mediaDetail.poster_path} 
+        synopsis={mediaDetail.overview} 
+        release_date={mediaDetail.release_date}
+      />
+      <Credit id={id} />
     </div>
   );
-
 }
 
 export default Detail;

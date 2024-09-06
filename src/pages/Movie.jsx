@@ -1,35 +1,67 @@
 import React, { useState, useRef } from "react";
-import useEffectAfterMount from "../hooks/useEffectAfterMount";
-
-import Pagination from "../components/Pagination";
-
+import { useQuery,useInfiniteQuery } from "@tanstack/react-query";
 import ListCard from "../components/ListCard";
+import sliceFive from "../utils/sliceFive";
+import {
+  loadApiData,
+  loadApiDataWithFilters,
+  fetchConfiguration,
+} from "../api/mediaSearchApi";
 
 const Movie = () => {
-  const [movieArray, setMovieArray] = useState([]);
-  const [imageUrl, setImageUrl] = useState("");
-  const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
-  const [totalPages, setTotalPages] = useState(0);
   const [filtersSelected, setFiltersSelected] = useState(4);
+  const [shouldFetch, setShouldFetch] = useState(false);
   const inputRef = useRef(null);
   const filters = ["popular", "now_playing", "upcoming", "top_rated"];
 
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzODM5YWZkYjZlMjI5N2Y4MDMwYTViNWVlNTJkMjBiYSIsInN1YiI6IjY2NmY0MmIyMDYyNTRhY2JjOWVjMDE2MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xoxStgNC8pIKEItzhDhfCX0y443PbLYpEPQllneU34I",
+  const {
+    data: config,
+    isLoading: isLoadingConfig,
+    error: errorConfig,
+  } = useQuery({
+    queryKey: ["configuration"],
+    queryFn: fetchConfiguration,
+    select: (data) => ({
+      imageUrl: data.images.base_url + data.images.backdrop_sizes[0],
+    }),
+  });
+
+  const {
+    data: movieArray,
+    isLoading: isLoadingMovies,
+    error: errorMovies,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteQuery({
+    queryKey: ["movies", query, filters[filtersSelected]],
+    queryFn: ({ pageParam = 1 }) => {
+      if (query) {
+        return loadApiData({ queryKey: ["movieArray", query, pageParam] });
+      } else {
+        return loadApiDataWithFilters({
+          queryKey: ["movieArray", filters[filtersSelected], pageParam],
+        });
+      }
     },
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined;
+    },
+    enabled: shouldFetch,
+    keepPreviousData: true,
+  });
+  
+  const loadMoreMovies = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
   };
 
-  useEffectAfterMount(() => {
-    loadApiDataWithFilters();
-  }, [filtersSelected]);
-
   const handleFilters = (e) => {
-    setPage(1);
+
+    setQuery("");
+    setShouldFetch(true);
     switch (e.target.id) {
       case "option1":
         setFiltersSelected(0);
@@ -48,77 +80,27 @@ const Movie = () => {
     }
   };
 
-  function sliceFive(arr) {
-    let groups = [];
-    for (let i = 0; i < arr.length; i += 5) {
-      groups.push(arr.slice(i, i + 5));
-    }
-    return groups;
-  }
-
-  const loadApiDataWithFilters = async () => {
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${filters[filtersSelected]}?language=fr-FR&page=${page}`,
-        options
-      );
-      const data = await response.json();
-      const nbPage = data.total_pages > 50 ? 50 : data.total_pages;
-      setTotalPages(nbPage);
-      const slicedArray = sliceFive(data.results);
-      setMovieArray(slicedArray);
-    } catch (err) {
-      console.error(err);
-    }
-
-    try {
-      const response = await fetch(
-        "https://api.themoviedb.org/3/configuration",
-        options
-      );
-      const data = await response.json();
-      const base_url = data.images.base_url;
-      const file_size = data.images.backdrop_sizes[0];
-      setImageUrl(base_url + file_size);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setFiltersSelected(4);
-    document.querySelectorAll(".btn-check").forEach((button) => {
-      button.checked = false;
-    });
-    setPage(1);
     setQuery(inputRef.current.value);
-    loadApiData();
+    setShouldFetch(true);
   };
 
-  const loadApiData = async () => {
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=fr-FR&page=${page}`,
-        options
-      );
-      const data = await response.json();
-      setMovieArray(data.results.slice(0, 5));
-      const nbPage = response.total_pages > 50 ? 50 : response.total_pages;
-      setTotalPages(nbPage);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  if (isLoadingMovies || isLoadingConfig) {
+    return <div>Loading...</div>;
+  }
 
-  const newPage = (pageNumber) => {
-    setPage(pageNumber);
-    if (filtersSelected < 4) {
-      loadApiDataWithFilters();
-    } else {
-      loadApiData();
-    }
-  };
+  if (errorMovies || errorConfig) {
+    return (
+      <div>
+        Error occurred:{" "}
+        {errorMovies ? errorMovies.message : errorConfig.message}
+      </div>
+    );
+  }
+  const allMovies = movieArray?.pages.flatMap((page) => page.results) ?? [];
+  const slicedMovies = sliceFive(allMovies);
 
   return (
     <div>
@@ -187,22 +169,42 @@ const Movie = () => {
         </label>
       </div>
 
-      {movieArray.length > 0 && (
+      {slicedMovies && slicedMovies.length > 0 && (
         <div className="movie-list container">
           <div className="row row-cols-1 row-cols-sm-3 row-cols-md-4 row-cols-lg-5">
-            {movieArray.map((movieList, index) => (
+            {slicedMovies.map((movieList, index) => (
               <ListCard
                 key={index}
                 movieList={movieList}
                 media={"movie"}
-                imageUrl={imageUrl}
+                imageUrl={config.imageUrl}
               />
             ))}
           </div>
         </div>
       )}
-
-      <Pagination totalPages={totalPages} newPage={newPage} />
+      {hasNextPage && (
+        <div className="d-flex justify-content-center my-4">
+          <button
+            className="btn btn-primary"
+            onClick={loadMoreMovies}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Chargement...
+              </>
+            ) : (
+              "Charger plus de films"
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
