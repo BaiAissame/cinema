@@ -1,12 +1,12 @@
 import React from 'react';
 import Card from "../components/ui/Card";
 //Changer ListCard =>adaptable pour les série aussi
-const ListCard = ({movieList,media,imageUrl}) => {
+const ListCard = ({mediaList,media,imageUrl}) => {
   return (
     <>
-        {movieList.map((movie, index) => (
+        {mediaList.map((show, index) => (
         <div key={index} className="col mb-4">
-            <Card media={media} opts={movie} imageUrl={imageUrl+movie.backdrop_path}/>
+            <Card media={media} opts={show} imageUrl={imageUrl+show.backdrop_path}/>
         </div>
         ))}
     </>

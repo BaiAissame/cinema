@@ -175,7 +175,7 @@ const Movie = () => {
             {slicedMovies.map((movieList, index) => (
               <ListCard
                 key={index}
-                movieList={movieList}
+                mediaList={movieList}
                 media={"movie"}
                 imageUrl={config.imageUrl}
               />
