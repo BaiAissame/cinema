@@ -16,21 +16,11 @@ const options = {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    return response.json();
-  };
-  
-  export const fetchConfiguration = async () => {
-    const response = await fetch(
-      "https://api.themoviedb.org/3/configuration",
-      options
-    );
-    if (!response.ok) {
-      throw new Error('Erreur réseau');
-    }
-    return response.json();
+    const data = response.json();
+    console.log(data);
+    return data;
   };
   
   export default {
-    fetchMediaDetail,
-    fetchConfiguration
+    fetchMediaDetail
   };

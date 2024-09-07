@@ -3,7 +3,11 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Banner from "./ui/Banner";
 import Credit from "./Credit";
-import { fetchMediaDetail, fetchConfiguration } from '../api/detailApi';
+import { fetchMediaDetail } from '../api/detailApi';
+import fetchConfiguration from "../api/fetchConfiguration";
+import Trailer from './Trailer';
+
+// const API_KEY=AIzaSyCH-PRnkD1VqBUAXFJHsoXd1R7kRYz5Gx8;
 
 function Detail() {
   const { media, id } = useParams();
@@ -14,7 +18,7 @@ function Detail() {
   });
 
   const { data: config, isLoading: isLoadingConfig, error: errorConfig } = useQuery({
-    queryKey: 'configuration',
+    queryKey: ['configuration'],
     queryFn: fetchConfiguration,
     select: (data) => ({
       posterUrl: data.images.base_url + data.images.backdrop_sizes[3],
@@ -27,7 +31,7 @@ function Detail() {
   if (errorConfig) return <div>Erreur lors du chargement de la configuration : {errorConfig.message}</div>;
 
   return (
-    <div>
+    <div className="container">
       <Banner 
         title={mediaDetail.title} 
         poster_url={config.posterUrl + mediaDetail.poster_path} 
@@ -35,7 +39,8 @@ function Detail() {
         synopsis={mediaDetail.overview} 
         release_date={mediaDetail.release_date}
       />
-      <Credit id={id} />
+      <Credit media={media} id={id} />
+      <Trailer videos={mediaDetail.videos.results} />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import Card from "../components/ui/Card";
-//Changer ListCard =>adaptable pour les série aussi
 const ListCard = ({mediaList,media,imageUrl}) => {
   return (
     <>

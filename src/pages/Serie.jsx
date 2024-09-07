@@ -5,15 +5,15 @@ import sliceFive from "../utils/sliceFive";
 import {
   loadApiData,
   loadApiDataWithFilters,
-} from "../api/mediaSearchApi";
+} from "../api/serieSearchApi";
 import fetchConfiguration from "../api/fetchConfiguration";
 
-const Movie = () => {
+const Serie = () => {
   const [query, setQuery] = useState("");
   const [filtersSelected, setFiltersSelected] = useState(4);
   const [shouldFetch, setShouldFetch] = useState(false);
   const inputRef = useRef(null);
-  const filters = ["popular", "now_playing", "upcoming", "top_rated"];
+  const filters = ["airing_today", "on_the_air", "popular", "top_rated"];
 
   const {
     data: config,
@@ -28,20 +28,20 @@ const Movie = () => {
   });
 
   const {
-    data: movieArray,
-    isLoading: isLoadingMovies,
-    error: errorMovies,
+    data: serieArray,
+    isLoading: isLoadingSerie,
+    error: errorSerie,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
   } = useInfiniteQuery({
-    queryKey: ["movies", query, filters[filtersSelected]],
+    queryKey: ["serie", query, filters[filtersSelected]],
     queryFn: ({ pageParam = 1 }) => {
       if (query) {
-        return loadApiData({ queryKey: ["movieArray", query, pageParam] });
+        return loadApiData({ queryKey: ["serieArray", query, pageParam] });
       } else {
         return loadApiDataWithFilters({
-          queryKey: ["movieArray", filters[filtersSelected], pageParam],
+          queryKey: ["serieArray", filters[filtersSelected], pageParam],
         });
       }
     },
@@ -52,7 +52,7 @@ const Movie = () => {
     keepPreviousData: true,
   });
   
-  const loadMoreMovies = () => {
+  const loadMoreSeries = () => {
     if (hasNextPage) {
       fetchNextPage();
     }
@@ -87,20 +87,20 @@ const Movie = () => {
     setShouldFetch(true);
   };
 
-  if (isLoadingMovies || isLoadingConfig) {
+  if (isLoadingSerie || isLoadingConfig) {
     return null;
   }
 
-  if (errorMovies || errorConfig) {
+  if (errorSerie || errorConfig) {
     return (
       <div>
         Error occurred:{" "}
-        {errorMovies ? errorMovies.message : errorConfig.message}
+        {errorSerie ? errorSerie.message : errorConfig.message}
       </div>
     );
   }
-  const allMovies = movieArray?.pages.flatMap((page) => page.results) ?? [];
-  const slicedMovies = sliceFive(allMovies);
+  const allSeries = serieArray?.pages.flatMap((page) => page.results) ?? [];
+  const slicedSeries = sliceFive(allSeries);
 
   return (
     <div>
@@ -129,7 +129,7 @@ const Movie = () => {
           autoComplete="off"
         />
         <label className="btn btn-secondary" htmlFor="option1">
-          Popularité
+        Diffusées aujourd'hui
         </label>
 
         <input
@@ -141,7 +141,7 @@ const Movie = () => {
           autoComplete="off"
         />
         <label className="btn btn-secondary" htmlFor="option2">
-          Du moment
+          En cours de diffusion
         </label>
 
         <input
@@ -153,7 +153,7 @@ const Movie = () => {
           autoComplete="off"
         />
         <label className="btn btn-secondary" htmlFor="option3">
-          à venir
+        Populaires
         </label>
 
         <input
@@ -165,18 +165,18 @@ const Movie = () => {
           autoComplete="off"
         />
         <label className="btn btn-secondary" htmlFor="option4">
-          Les mieux notés
+        Les mieux évaluées
         </label>
       </div>
 
-      {slicedMovies && slicedMovies.length > 0 && (
-        <div className="movie-list container">
+      {slicedSeries && slicedSeries.length > 0 && (
+        <div className="container">
           <div className="row row-cols-1 row-cols-sm-3 row-cols-md-4 row-cols-lg-5">
-            {slicedMovies.map((movieList, index) => (
+            {slicedSeries.map((serieList, index) => (
               <ListCard
                 key={index}
-                mediaList={movieList}
-                media={"movie"}
+                mediaList={serieList}
+                media={"tv"}
                 imageUrl={config.imageUrl}
               />
             ))}
@@ -187,7 +187,7 @@ const Movie = () => {
         <div className="d-flex justify-content-center my-4">
           <button
             className="btn btn-primary"
-            onClick={loadMoreMovies}
+            onClick={loadMoreSeries}
             disabled={isFetchingNextPage}
           >
             {isFetchingNextPage ? (
@@ -209,4 +209,4 @@ const Movie = () => {
   );
 };
 
-export default Movie;
+export default Serie;

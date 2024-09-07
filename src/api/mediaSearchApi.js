@@ -17,7 +17,6 @@ export const loadApiData = async ({ queryKey }) => {
     throw new Error("Network response was not ok");
   }
   const data = await response.json();
-  console.log("Movie Data:", data);
   return data;
 };
 
@@ -34,20 +33,9 @@ export const loadApiDataWithFilters = async ({ queryKey }) => {
   return data;
 };
 
-export const fetchConfiguration = async () => {
-  const response = await fetch(
-    "https://api.themoviedb.org/3/configuration",
-    options
-  );
-  if (!response.ok) {
-    throw new Error("Erreur réseau");
-  }
-  const data = await response.json();
-  return data;
-};
+
 
 export default {
   loadApiData,
   loadApiDataWithFilters,
-  fetchConfiguration,
 };
