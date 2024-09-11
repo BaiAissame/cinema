@@ -7,6 +7,7 @@ import Detail from './components/Detail';
 import Movie from './pages/Movie';
 import Home from './pages/Home';
 import Serie from './pages/Serie';
+import Person from './pages/Person';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 
@@ -20,7 +21,7 @@ function App() {
         <Route path="/movie" element={<Movie />} />
         <Route path="/:media/:id" element={<Detail />} />
         <Route path="/tv" element={<Serie />} />
-
+        <Route path="/person" element={<Person />} />
       </Routes>
       <ReactQueryDevtools initialIsOpen={false} />
     </Router>

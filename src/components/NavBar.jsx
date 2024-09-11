@@ -40,8 +40,8 @@ function NavBar() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/Acteur">
-                Acteur
+              <Link className="nav-link" to="/person">
+                Artistes
               </Link>
             </li>
           </ul>

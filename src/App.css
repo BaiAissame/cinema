@@ -1,6 +1,6 @@
 
 /*--------------------------------------------------------------
-# Hero Section. Cette section a était récuperé de https://bootstrapmade.com/bizland-bootstrap-business-template/
+# Hero Section
 --------------------------------------------------------------*/
 .hero {
   width: 100%;
@@ -22,13 +22,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* Superposition noire semi-transparente */
-  z-index: 1; /* Assure que la superposition est en dessous du texte */
+  background: rgba(0, 0, 0, 0.5); 
+  z-index: 1; 
 }
 
 .hero .container {
   position: relative;
-  z-index: 2; /* Assure que le texte est au-dessus de la superposition */
+  z-index: 2;
 }
 
 .hero h1 {
@@ -95,8 +95,8 @@ body {
 
 .navbar {
   height: 4vw;
-  background-color: #ffffff !important; /* Blanc pur avec une priorité élevée */
-  background: #ffffff; /* S'assurer qu'il n'y a pas d'autres backgrounds définis */
+  background-color: #ffffff !important; 
+  background: #ffffff; 
 }
 
 /* Le logo a un ratio de 1*/
@@ -173,21 +173,21 @@ ul.scrollcast li {
   background-color: #FFA500;
 }
 .filter-button {
-  border: 2px solid #FFA500; /* Bordure orange */
-  background-color: transparent; /* Fond transparent */
-  color: #FFA500; /* Texte orange */
+  border: 2px solid #FFA500; 
+  background-color: transparent; 
+  color:black; 
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .filter-button:hover {
-  background-color: #FFA500; /* Fond orange au survol */
-  color: white; /* Texte blanc au survol */
+  background-color: #FFA500; 
+  color: white;
   border: 2px solid #FFA500;
 }
 
-/* Cible le label lorsque le radio est checked */
+
 .btn-check:checked + .filter-button {
-  background-color: #FFA500; /* Fond orange */
-  color: black; /* Texte blanc */
+  background-color: #FFA500; 
+  color: black; 
   border: 2px solid #FFA500;
 }

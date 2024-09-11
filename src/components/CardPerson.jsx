@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import defaultImage from "../image/defaultImage.svg";
 
 function CardPerson({ media, opts, imageUrl }) {
+  console.log(opts);
   return (
     <div
       className="card shadow p-3 ms-3 mb-5 bg-body-tertiary rounded"
