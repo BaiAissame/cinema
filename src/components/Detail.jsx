@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Banner from "./ui/Banner";
 import Credit from "./Credit";
-import { fetchMediaDetail } from '../api/detailApi';
+import  fetchMediaDetail  from '../api/detailApi';
 import fetchConfiguration from "../api/fetchConfiguration";
 import Trailer from './Trailer';
 
@@ -29,15 +29,16 @@ function Detail() {
   if (errorConfig) return <div>Erreur lors du chargement de la configuration : {errorConfig.message}</div>;
 
   return (
-    <div className="container">
+    <div>
       <Banner 
         title={media ==="movie" ? mediaDetail.title : mediaDetail.name} 
         poster_url={config.posterUrl + mediaDetail.poster_path} 
         image_url={config.imageUrl + mediaDetail.backdrop_path} 
         synopsis={mediaDetail.overview} 
         release_date={media ==="movie" ? mediaDetail.release_date : mediaDetail.first_air_date}
+        
       />
-      <Credit media={media} id={id} />
+      <Credit media={media} id={id}  />
       <Trailer videos={mediaDetail.videos.results} />
     </div>
   );

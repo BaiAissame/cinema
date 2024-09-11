@@ -153,22 +153,52 @@ body {
 }
 
 
-ul.scrollcast {
-  background-color: #d1d1e0;
-  overflow: auto;
-  white-space: nowrap;
-  height: 25vw;
+.card-img-wrapper {
+  position: relative;
+  padding-top: 150%; 
+  overflow: hidden;
 }
 
-
-ul.scrollcast li {
-  display: inline-block;
-  color: white;
-  text-align: center;
-  padding: 14px;
-  text-decoration: none;
+.card-img-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
+.card {
+  width: 100%;
+  max-width: 200px;
+}
+
+.card-body {
+  max-width: 100%;
+}
+
+.row.flex-nowrap {
+  padding-bottom: 1rem;
+}
+
+.row.flex-nowrap::-webkit-scrollbar {
+  height: 8px;
+}
+
+.row.flex-nowrap::-webkit-scrollbar-thumb {
+  background-color: #dee2e6;
+  border-radius: 4px;
+}
+
+.row.flex-nowrap::-webkit-scrollbar-track {
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 576px) {
+  .card {
+    max-width: 150px;
+  }
+}
 .search-button{
   background-color: #FFA500;
 }
@@ -190,4 +220,58 @@ ul.scrollcast li {
   background-color: #FFA500; 
   color: black; 
   border: 2px solid #FFA500;
+}
+
+/* Trailer */
+
+
+
+.trailer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.carousel {
+  position: relative;
+  overflow: hidden; 
+}
+
+.carousel-inner {
+  width: 100%;
+  height: auto;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5%;
+  height: 5%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  z-index: 10; 
+}
+
+.carousel-control-prev {
+  left: 10px;
+}
+
+.carousel-control-next {
+  right: 10px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #000;
+  border-radius: 50%;
+}
+
+.carousel-item {
+  transition: none;
 }

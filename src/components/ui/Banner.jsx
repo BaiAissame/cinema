@@ -4,7 +4,7 @@ import { formatDate } from "../../utils/formatDate";
 export default function Banner({ title, poster_url, synopsis, release_date, image_url }) {
   return (
     <div 
-      className="banner d-flex align-items-center" 
+      className="banner d-flex align-items-center mb-4" 
       style={{
         backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.3)), url('${image_url}')`,
       }}

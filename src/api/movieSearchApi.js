@@ -8,7 +8,7 @@ const options = {
 };
 
 export const loadApiDataMovie = async ({ queryKey }) => {
-  const [_, query, page] = queryKey;
+  const [, query, page] = queryKey;
   const response = await fetch(
     `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=fr-FR&page=${page}`,
     options
@@ -21,7 +21,7 @@ export const loadApiDataMovie = async ({ queryKey }) => {
 };
 
 export const loadApiDataWithFiltersMovie = async ({ queryKey }) => {
-  const [_, filtersSelected, page] = queryKey;
+  const [, filtersSelected, page] = queryKey;
   const response = await fetch(
     `https://api.themoviedb.org/3/movie/${filtersSelected}?language=fr-FR&page=${page}`,
     options
@@ -34,7 +34,7 @@ export const loadApiDataWithFiltersMovie = async ({ queryKey }) => {
 };
 
 
-
+// eslint-disable-next-line
 export default {
   loadApiDataMovie,
   loadApiDataWithFiltersMovie,

@@ -8,7 +8,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import reportWebVitals from "./reportWebVitals";
 import {
-  useQuery,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import CardPerson from "./CardPerson";
 import fetchConfiguration from "../api/fetchConfiguration";
 import { loadCast } from "../api/creditApi";
@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 function Credit({ media, id }) {
 
   const {
-    data: data,
+    data: dataCredit,
     isLoading: isLoadingCredit,
     error: errorCredit,
   } = useQuery({
@@ -40,20 +40,20 @@ function Credit({ media, id }) {
         Erreur lors du chargement de la configuration : {errorConfig.message}
       </div>
     );
-  return (
-    <div>
-      <ul className="scrollcast">
-        {data.cast.map((person) => (
-          <li key={person.id}>
-            <CardPerson
-              media={"person"}
-              imageUrl={config.imageUrl + person.profile_path}
-              opts={person}
-            />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    return (
+      <div className="container-fluid px-0">
+        <div className="row flex-nowrap overflow-auto g-2">
+          {dataCredit.cast.map((person) => (
+            <div key={person.id} className="col-4 col-sm-3 col-md-2 col-xl-1">
+              <CardPerson
+                media="person"
+                imageUrl={config.imageUrl + person.profile_path}
+                opts={person}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
 }
 export default Credit;
