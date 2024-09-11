@@ -7,8 +7,6 @@ import Movie from './pages/Movie';
 import Home from './pages/Home';
 import Serie from './pages/Serie';
 import Person from './pages/Person';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
 function ConditionalRoute() {
   const { media } = useParams(); 
 
@@ -30,7 +28,7 @@ function App() {
         <Route path="/person" element={<Person />} />
         <Route path="/:media/:id" element={<ConditionalRoute />} />
       </Routes>
-      <ReactQueryDevtools initialIsOpen={false} />
+
     </Router>
   );
 }
