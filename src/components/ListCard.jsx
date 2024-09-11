@@ -5,7 +5,7 @@ const ListCard = ({mediaList,media,imageUrl}) => {
     <>
         {mediaList.map((show, index) => (
         <div key={index} className="col mb-4">
-            <Card media={media} opts={show} imageUrl={imageUrl+show.backdrop_path}/>
+            <Card media={media} opts={show} imageUrl={imageUrl+show.poster_path}/>
         </div>
         ))}
     </>

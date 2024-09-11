@@ -7,8 +7,6 @@ import { fetchMediaDetail } from '../api/detailApi';
 import fetchConfiguration from "../api/fetchConfiguration";
 import Trailer from './Trailer';
 
-// const API_KEY=AIzaSyCH-PRnkD1VqBUAXFJHsoXd1R7kRYz5Gx8;
-
 function Detail() {
   const { media, id } = useParams();
 
@@ -22,7 +20,7 @@ function Detail() {
     queryFn: fetchConfiguration,
     select: (data) => ({
       posterUrl: data.images.base_url + data.images.backdrop_sizes[3],
-      imageUrl: data.images.base_url + data.images.backdrop_sizes[0],
+      imageUrl: data.images.base_url + data.images.backdrop_sizes[1],
     })
   });
 
@@ -33,11 +31,11 @@ function Detail() {
   return (
     <div className="container">
       <Banner 
-        title={mediaDetail.title} 
+        title={media ==="movie" ? mediaDetail.title : mediaDetail.name} 
         poster_url={config.posterUrl + mediaDetail.poster_path} 
-        image_url={config.imageUrl + mediaDetail.poster_path} 
+        image_url={config.imageUrl + mediaDetail.backdrop_path} 
         synopsis={mediaDetail.overview} 
-        release_date={mediaDetail.release_date}
+        release_date={media ==="movie" ? mediaDetail.release_date : mediaDetail.first_air_date}
       />
       <Credit media={media} id={id} />
       <Trailer videos={mediaDetail.videos.results} />

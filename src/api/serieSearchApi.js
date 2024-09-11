@@ -7,7 +7,7 @@ const options = {
     },
   };
   
-  export const loadApiData = async ({ queryKey }) => {
+  export const loadApiDataSerie = async ({ queryKey }) => {
     const [_, query, page] = queryKey;
     const response = await fetch(
       `https://api.themoviedb.org/3/search/tv?query=${query}&include_adult=false&language=fr-FR&page=${page}`,
@@ -20,7 +20,7 @@ const options = {
     return data;
   };
   
-  export const loadApiDataWithFilters = async ({ queryKey }) => {
+  export const loadApiDataWithFiltersSerie = async ({ queryKey }) => {
     const [_, filtersSelected, page] = queryKey;
     const response = await fetch(
       `https://api.themoviedb.org/3/tv/${filtersSelected}?language=fr-FR&page=${page}`,
@@ -35,7 +35,7 @@ const options = {
   
 
   export default {
-    loadApiData,
-    loadApiDataWithFilters,
+    loadApiDataSerie,
+    loadApiDataWithFiltersSerie,
   };
   
